@@ -274,8 +274,9 @@ ELEMENTS.search.addEventListener("input", () => {
 });
 
 
-// load maps with github content api first and falling back to maps.json
+// load maps with github content api first with fallback to maps.json
 async function initializeMaps() {
+  ELEMENTS.status.textContent = "Loading maps...";
   const githubMaps = await loadGithubMaps();
   maps = githubMaps.length > 0 ? githubMaps : await loadLocalMaps();
   renderMapList(maps);
