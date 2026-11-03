@@ -1,9 +1,9 @@
 const ELEMENTS = {
+  themeToggle: document.querySelector("#theme-toggle"),
+  pageScroll: document.querySelector(".page-scroll"),
   list: document.querySelector("#maps"),
   search: document.querySelector("#search"),
-  status: document.querySelector("#status"),
-  themeToggle: document.querySelector("#theme-toggle"),
-  mapScroll: document.querySelector(".page-scroll")
+  status: document.querySelector("#status")
 };
 
 const THEME_STORAGE_KEY = "theme";
@@ -14,8 +14,6 @@ const LEVEL_METADATA_PATTERN = /(?:^|\/)custom_levels\/[^/]+\/level\.json$/i;
 let maps = [];
 
 
-
-// THEME:
 // set the theme based on stored preference or system preference
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -35,17 +33,20 @@ ELEMENTS.themeToggle.addEventListener("click", () => {
 });
 
 
-
-// INDEX FUNCTIONALITY:
 // update padding based on scrollbar visibility
 function updateScrollbarPadding() {
-  ELEMENTS.mapScroll.classList.toggle(
+  ELEMENTS.pageScroll.classList.toggle(
     "has-scrollbar",
-    ELEMENTS.mapScroll.scrollHeight > ELEMENTS.mapScroll.clientHeight
+    ELEMENTS.pageScroll.scrollHeight > ELEMENTS.pageScroll.clientHeight
   );
 }
 
 
+// observer for scrollbar visibility changes to update padding
+new ResizeObserver(updateScrollbarPadding).observe(ELEMENTS.pageScroll);
+
+
+// INDEX FUNCTIONALITY:
 // update palette based on current theme and save preference to localStorage
 function setTheme(theme) {
   document.documentElement.dataset.theme = theme;
@@ -271,10 +272,6 @@ ELEMENTS.search.addEventListener("input", () => {
 
   renderMapList(matches);
 });
-
-
-// observer for scrollbar visibility changes to update padding
-new ResizeObserver(updateScrollbarPadding).observe(ELEMENTS.mapScroll);
 
 
 // load maps with github content api first and falling back to maps.json

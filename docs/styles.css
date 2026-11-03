@@ -75,6 +75,10 @@ body {
   overflow-y: auto;
 }
 
+.page-scroll.has-scrollbar {
+  padding-right: 10px;
+}
+
 .page-footer {
   display: flex;
   align-items: center;
@@ -145,10 +149,6 @@ input {
   background: var(--control-background);
   border: 1px solid var(--border-control);
   flex: 0 0 auto;
-}
-
-.page-scroll.has-scrollbar {
-  padding-right: 10px;
 }
 
 ul {
