@@ -22,8 +22,13 @@ function setTheme(theme) {
   ELEMENTS.themeToggle.setAttribute("aria-label", theme === "dark" ? "Switch to light mode" : "Switch to dark mode");
 }
 
-const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
-setTheme(storedTheme === "dark" || storedTheme === "light" ? storedTheme : SYSTEM_THEME);
+function syncThemeFromStorage() {
+  const storedTheme = localStorage.getItem(THEME_STORAGE_KEY);
+  setTheme(storedTheme === "dark" || storedTheme === "light" ? storedTheme : SYSTEM_THEME);
+}
+
+syncThemeFromStorage();
+window.addEventListener("pageshow", syncThemeFromStorage);
 
 
 // listen for theme button clicked and toggle theme
@@ -134,12 +139,11 @@ async function loadLocalMaps() {
       const folder = repositoryPath.includes("/")
         ? repositoryPath.slice(0, repositoryPath.lastIndexOf("/"))
         : "";
-      const encodedRepositoryPath = repositoryPath.split("/").map(encodeURIComponent).join("/");
       const encodedFolder = folder.split("/").filter(Boolean).map(encodeURIComponent).join("/");
 
       return {
         name: folder.split("/").pop() || file,
-        file: `${RAW_REPOSITORY_ROOT}${encodedRepositoryPath}`,
+        file: `${RAW_REPOSITORY_ROOT}${repositoryPath.split("/").map(encodeURIComponent).join("/")}`,
         icon: encodedFolder
           ? `${RAW_REPOSITORY_ROOT}${encodedFolder}/icon.png`
           : DEFAULT_ICON
