@@ -10,6 +10,7 @@ const THEME_STORAGE_KEY = "theme";
 const SYSTEM_THEME = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 const DEFAULT_ICON = "default_icon.png";
 const LEVEL_METADATA_PATTERN = /(?:^|\/)custom_levels\/[^/]+\/level\.json$/i;
+const RAW_REPOSITORY_ROOT = "https://raw.githubusercontent.com/sMaptic/MapIndex/main/";
 
 let maps = [];
 
@@ -127,14 +128,21 @@ async function loadLocalMaps() {
       const file = typeof location === "string" ? location : location.file;
       if (!file) return null;
 
-      const folder = file.includes("/")
-        ? file.slice(0, file.lastIndexOf("/"))
+      const repositoryPath = file
+        .replace(/^(\.\.\/)+/, "")
+        .replace(/^\/+/, "");
+      const folder = repositoryPath.includes("/")
+        ? repositoryPath.slice(0, repositoryPath.lastIndexOf("/"))
         : "";
+      const encodedRepositoryPath = repositoryPath.split("/").map(encodeURIComponent).join("/");
+      const encodedFolder = folder.split("/").filter(Boolean).map(encodeURIComponent).join("/");
 
       return {
         name: folder.split("/").pop() || file,
-        file,
-        icon: `${folder}/icon.png`
+        file: `${RAW_REPOSITORY_ROOT}${encodedRepositoryPath}`,
+        icon: encodedFolder
+          ? `${RAW_REPOSITORY_ROOT}${encodedFolder}/icon.png`
+          : DEFAULT_ICON
       };
     }).filter(Boolean);
 
